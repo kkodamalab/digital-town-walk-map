@@ -1,0 +1,4 @@
+# getUser() inside the function verifies the user JWT, including current signing keys.
+# The gateway's legacy JWT verifier is not used with publishable/asymmetric keys.
+[functions.geocode]
+verify_jwt = false
