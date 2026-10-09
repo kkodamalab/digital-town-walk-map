@@ -14,6 +14,6 @@
 |本番Geoapify住所検索・現在地許可ダイアログ|未実施。Geoapify未設定、実GPS位置と利用者許可が必要。デモ検索・異常系と手動位置指定は検証済み|
 |npm audit（本番依存）|脆弱性0件|
 
-GitHub操作・公開状態は作業終了時に報告します。Pages未有効化時に `https://kkodamalab.github.io/digital-town-walk-map/` はHTTP404を返しました。APIによるPages作成は `Resource not accessible by integration`（403）で拒否されています。ブラウザ証明書の制限とGitHub連携権限の制限は別の問題です。
+GitHubへのプッシュと [PR #1](https://github.com/kkodamalab/digital-town-walk-map/pull/1) のmainマージが完了しました。 [Actions実行](https://github.com/kkodamalab/digital-town-walk-map/actions/runs/37928063513) では単体・ブラウザ・DB/RLS・ビルドが全て成功し、Pages設定だけが失敗、deployはスキップされました。Pages未有効化時に `https://kkodamalab.github.io/digital-town-walk-map/` はHTTP404を返しました。APIによるPages作成は `Resource not accessible by integration`（403）で拒否されています。ブラウザ証明書の制限とGitHub連携権限の制限は別の問題です。
 
 ローカルで確認した動作を、公開済みまたは本番サービスで検証済みとは扱いません。

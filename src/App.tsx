@@ -1024,6 +1024,22 @@ export default function App() {
               >
                 住所検索
               </button>
+              <p>
+                {db ? (
+                  <>
+                    <a
+                      href="https://www.geoapify.com/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Powered by Geoapify
+                    </a>{" "}
+                    · 検索結果はOpenStreetMap等のデータに基づきます。
+                  </>
+                ) : (
+                  "デモ検索：実際の住所検索サービスには接続しません。"
+                )}
+              </p>
               {results.map((r, i) => (
                 <button
                   type="button"
