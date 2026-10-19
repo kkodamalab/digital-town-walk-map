@@ -22,6 +22,13 @@ describe('place search provider', () => {
     expect(url.searchParams.get('limit')).toBe('5');
     expect(url.searchParams.get('countrycodes')).toBe('jp');
   });
+  it.each(['東京都八王子市南大沢1-1', '東京都八王子市南大沢１−１'])(
+    'normalizes a block address without dropping the lot number: %s', async query => {
+      const fetcher = provider();
+      const { searchPlaces } = await import('../src/placeSearch');
+      await searchPlaces(query);
+      expect((fetcher.mock.calls[0][0] as URL).searchParams.get('q')).toBe('東京都八王子市南大沢 1-1');
+    });
   it('biases the university search toward Minami-Osawa without replacing the query', async () => {
     const fetcher = provider();
     const { searchPlaces } = await import('../src/placeSearch');

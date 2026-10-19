@@ -14,7 +14,7 @@ import "leaflet/dist/leaflet.css";
 function pinIcon(className: string, color: string) {
   return L.divIcon({
     className,
-    html: `<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true"><path d="M14 37C11 31 1 22 1 14a13 13 0 0 1 26 0c0 8-10 17-13 23Z" fill="${color}" stroke="white" stroke-width="2"/><circle cx="14" cy="14" r="4" fill="white"/></svg>`,
+    html: `<svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true"><path d="M14 38C11 32 1 23 1 14a13 13 0 0 1 26 0c0 9-10 18-13 24Z" fill="${color}"/><circle cx="14" cy="14" r="4" fill="white"/></svg>`,
     iconSize: [28, 38],
     iconAnchor: [14, 38],
     popupAnchor: [0, -34],
@@ -26,9 +26,26 @@ const currentIcon = pinIcon("current-pin", "#236baf");
 function ViewLocation({ location }: { location?: MapLocation & { current?: boolean } }) {
   const map = useMap();
   useEffect(() => {
-    if (location) map.setView([location.lat, location.lng], 16);
+    // Expose geographic view state for integrations and functional tests.
+    const syncView = () => {
+      const center = map.getCenter();
+      Object.assign(map.getContainer().dataset, {
+        centerLat: String(center.lat), centerLng: String(center.lng), zoom: String(map.getZoom()),
+      });
+    };
+    syncView();
+    map.on("moveend", syncView);
+    return () => { map.off("moveend", syncView); };
+  }, [map]);
+  useEffect(() => {
+    // Apply map and marker coordinates atomically; an animated pan can retain
+    // stale projected marker positions when the candidate changes mid-pan.
+    if (location) {
+      map.closePopup();
+      map.setView([location.lat, location.lng], 16, { animate: false });
+    }
   }, [location, map]);
-  return location ? <Marker position={[location.lat, location.lng]} icon={location.current ? currentIcon : searchIcon} title={location.current ? "現在地" : "検索地点"}><Popup>{location.label}</Popup></Marker> : null;
+  return location ? <Marker key={location.current ? "current" : "search"} position={[location.lat, location.lng]} icon={location.current ? currentIcon : searchIcon} title={location.current ? "現在地" : "検索地点"}><Popup>{location.label}</Popup></Marker> : null;
 }
 function Picker({
   position,
