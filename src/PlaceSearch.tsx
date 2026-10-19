@@ -31,7 +31,7 @@ export default function PlaceSearch({ onLocate }: { onLocate: (location: MapLoca
     }}>
       <label htmlFor="place-query">場所を探す</label>
       <div className="place-search-row">
-        <input id="place-query" value={query} onChange={e => setQuery(e.target.value)} placeholder="地名・駅名・施設名を検索" maxLength={200} required />
+        <input id="place-query" value={query} onChange={e => setQuery(e.target.value)} placeholder="地名・住所・駅名・施設名を検索" maxLength={200} required />
         <button type="submit" disabled={busy}>検索</button>
         <button type="button" disabled={busy} onClick={() => {
           if (!navigator.geolocation) { setStatus("このブラウザでは現在地を取得できません"); return; }

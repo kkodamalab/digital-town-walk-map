@@ -31,7 +31,10 @@ export async function searchPlaces(input: string): Promise<MapLocation[]> {
   lastRequest = Date.now();
   try {
     // Prefer the main campus for the unqualified university name.
-    const q = query;
+    // Separate a Japanese street name from a numeric block/lot suffix.
+    // Nominatim treats the unseparated Japanese address as a single name.
+    const q = query.normalize("NFKC").replace(/[‐‑–—−ー](?=\d)/g, "-")
+      .replace(/([^\d\s])(\d+(?:-\d+)+)$/, "$1 $2");
     const url = new URL(await endpoint());
     url.search = new URLSearchParams({ q, format: "jsonv2", limit: "5", countrycodes: "jp", "accept-language": "ja" }).toString();
     if (query === "東京都立大学") url.searchParams.set("viewbox", "139.34,35.65,139.42,35.58");
