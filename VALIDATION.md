@@ -17,3 +17,13 @@
 GitHubへのプッシュと [PR #1](https://github.com/kkodamalab/digital-town-walk-map/pull/1) のmainマージが完了しました。 [Actions実行](https://github.com/kkodamalab/digital-town-walk-map/actions/runs/37928063513) では単体・ブラウザ・DB/RLS・ビルドが全て成功し、Pages設定だけが失敗、deployはスキップされました。Pages未有効化時に `https://kkodamalab.github.io/digital-town-walk-map/` はHTTP404を返しました。APIによるPages作成は `Resource not accessible by integration`（403）で拒否されています。ブラウザ証明書の制限とGitHub連携権限の制限は別の問題です。
 
 ローカルで確認した動作を、公開済みまたは本番サービスで検証済みとは扱いません。
+
+## 場所検索・ピン修正（2026-10-19、ローカル作業）
+
+- 基準: `60adb2a`。`origin/main` の取得はネットワーク制限および自動承認レビューのモデル容量不足により未実行。最新版との差分は未確認。
+- 単体試験: 既存9件＋検索プロバイダ13件＝22件成功。
+- TypeScript / Vite本番ビルド: 成功。サブパス設定を保持し、実行時サービス切替用の `place-search.json` を同梱。
+- E2E: PC/スマホ各6件を追加、既存を含む20件を検出。今回の実行は開発サーバーの `listen EPERM` で開始できず、成功とは扱わない。制限外実行も自動承認レビューのモデル容量不足で未実行。
+- 南大沢・東京駅・東京都立大学: 模擬応答を使用するE2Eケースを作成。実Nominatimでの結果、実ブラウザの表示、公開版は未検証。
+- Place → Content → Media、DBスキーマ、投稿カテゴリ、既存メディア型は変更なし。
+- リモート取得、実サービス検索、ブラウザ試験を完了した後でpush/PR、mainマージ、Actions・Pagesの確認が必要。

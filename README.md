@@ -30,6 +30,16 @@ npm run preview
 
 Linuxで既存Chromiumを使う場合は `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e`。ビルドの配信パスは `vite.config.ts` の `/digital-town-walk-map/` 固定です。ハッシュ/履歴によるルーティングを使わず、Pagesの深いパス404を避けます。
 
+## 閲覧用の場所検索・現在地
+
+「場所を探す」はSupabase未設定のデモ版でも利用できます。Enterまたは「検索」でNominatimの公開検索APIへ問い合わせ、日本国内の候補を最大5件表示します。最初の結果へ移動し、候補を選ぶとその地点へズーム16で移動します。「東京都立大学」は南大沢キャンパス周辺のviewboxで優先順位を付けます（実サービスのデータに依存し、結果を固定していません）。茶色は検索地点、青色は現在地、濃い緑は既存投稿です。
+
+検索は入力中には実行せず、クライアント内で同時実行を禁止し、通信開始間隔を1.1秒以上空け、同一検索語の応答をメモリに最大100件キャッシュします。キーは不要です。ブラウザのRefererでサイトを識別し、画面内にNominatimとOpenStreetMapの帰属を表示します。検索語はサービスへ送信するため個人情報を入力しないでください。ネットワーク許可先は `nominatim.openstreetmap.org` です。
+
+[公開Nominatimの利用方針](https://operations.osmfoundation.org/policies/nominatim/)に従い、少人数の手動検索用とします。自動補完・一括検索・定期取得は行いません。複数利用者全体のアクセス増加時は、全体レート制限と共有キャッシュを持つプロキシ、専用サービスまたは自前のNominatimへ切り替えてください。互換APIの接続先は `public/place-search.json` の `url` で差し替えられます（配信済みの `place-search.json` の変更だけでも切替可能で、JavaScriptの変更・再ビルドは不要）。ビルド時の `VITE_PLACE_SEARCH_URL` による上書きも可能です。VITE変数には秘密キーを設定しないでください。
+
+「現在地」はブラウザの許可を求め、閲覧位置だけを移動します。検索地点・現在地とも投稿データやDBに保存しません。「記録を検索」は引き続き投稿タイトル・説明の検索とカテゴリ等の絞り込みを行います。Place → Content → Mediaと既存メディア種別の構造は変更していません。360°/WebXR機能は今回の対象外です。
+
 ## Supabaseプロジェクト作成・SQL
 
 1. https://supabase.com/dashboard で **New project**。Organizationを選び、Nameを `digital-town-walk-map`、Database Passwordは強い値を安全に保存、Regionは利用者に近い **Northeast Asia (Tokyo)** を選択して **Create new project**。
@@ -89,7 +99,7 @@ delete from public.user_roles where user_id = '対象のUser UID';
 
 ## 住所検索（Geoapify）
 
-公開Nominatimには接続しません。実データでは認証済みユーザーがSupabase Edge Function経由でGeoapifyへ検索します。
+投稿フォームの住所検索は公開Nominatimには接続しません。実データでは認証済みユーザーがSupabase Edge Function経由でGeoapifyへ検索します。閲覧用の「場所を探す」は以下の独立した検索です。
 
 1. https://myprojects.geoapify.com/ でプロジェクトを作成しGeocoding APIのキーを発行。契約プランの利用量と規約を確認。
 2. Supabase CLIを公式手順で導入し、プロジェクトルートから以下を実行。
