@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import type { User } from "@supabase/supabase-js";
 import TownMap from "./Map";
+import PlaceSearch from "./PlaceSearch";
+import type { MapLocation } from "./placeSearch";
 import { db, configurationError } from "./backend";
 import { demoRecords, demoRequests } from "./demo";
 import {
@@ -18,6 +20,7 @@ import {
 import type { Entry, Media, Application } from "./domain";
 
 export default function App() {
+  const [mapLocation, setMapLocation] = useState<(MapLocation & { current?: boolean })>();
   const [mode, setMode] = useState<"records" | "help">("records"),
     [view, setView] = useState("map");
   const [records, setRecords] = useState<Entry[]>(db ? [] : demoRecords),
@@ -506,12 +509,13 @@ export default function App() {
               ＋ {mode === "records" ? "記録を投稿" : "困り事を相談"}
             </button>
           </div>
+          <PlaceSearch onLocate={(location, current) => { setMapLocation({ ...location, current }); setView("map"); }} />
           <div className="toolbar">
             <label className="search">
-              ⌕{" "}
+              <span className="record-search-label">記録を検索</span>
               <input
                 aria-label="キーワード検索"
-                placeholder="キーワードで探す"
+                placeholder="投稿タイトル・説明を検索"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -573,7 +577,7 @@ export default function App() {
             </button>
           )}
           {view === "map" && (
-            <TownMap entries={entries} onSelect={setSelected} />
+            <TownMap entries={entries} onSelect={setSelected} location={mapLocation} />
           )}
           <div className="list-heading">
             <h3>{adminView ? "管理対象の投稿" : "まちの投稿"}</h3>

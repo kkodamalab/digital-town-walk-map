@@ -159,6 +159,7 @@ h2 {
   flex: 1;
   min-width: 200px;
 }
+.record-search-label { white-space: nowrap; }
 .search input {
   border: 0;
   min-width: 0;
@@ -203,19 +204,17 @@ label select {
   z-index: 0;
   background: #e4ede6;
 }
-.town-pin {
-  color: #fff;
-  text-align: center;
-  background: #2b644e;
-  border: 3px solid white;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  box-shadow: 0 2px 5px #0004;
-}
-.town-pin span {
-  display: block;
-  transform: rotate(45deg);
-}
+.town-pin, .search-pin, .current-pin { background: transparent; border: 0; }
+.town-pin svg, .search-pin svg, .current-pin svg { display: block; filter: drop-shadow(0 2px 2px #0004); }
+.place-search { padding: 12px; margin-bottom: 12px; border: 1px solid #d5dfd8; border-radius: 12px; }
+.place-search label { display: block; font-weight: 700; margin-bottom: 6px; }
+.place-search-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.place-search-row input { flex: 1 1 240px; min-width: 0; }
+.place-search-row button { flex: 0 0 auto; }
+.place-search p { margin: 8px 0; }
+.place-search small { display: block; margin-top: 8px; }
+.place-candidates { list-style: none; padding: 0; margin: 8px 0; max-height: 200px; overflow: auto; }
+.place-candidates button { width: 100%; text-align: left; overflow-wrap: anywhere; margin-bottom: 4px; }
 .list-heading {
   display: flex;
   align-items: center;
